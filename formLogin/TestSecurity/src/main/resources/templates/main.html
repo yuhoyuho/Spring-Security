@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>main page</h2>
+<br>
+사용자 정보
+<br>
+<p>아이디 : <span th:text="${id}"></span></p>
+<p>권한 : <span th:text="${role}"></span></p>
+<button onclick="location.href='/logout'">로그아웃</button>
+</body>
+</html>

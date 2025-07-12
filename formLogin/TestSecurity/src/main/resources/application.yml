@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/TestSecurity
+    username: root
+    password: dldbgh1205`
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        format_sql: true;
+        dialect: org.hibernate.dialect.MySQLDialect
+
+server:
+  servlet:
+    session:
+      timeout: 1800        #분 단위로 설정할 경우 30m 처럼 m을 붙여줌.
