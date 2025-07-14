@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/springjwt
+    username: root
+    password: dldbgh1205`
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        format_sql: true;
+        dialect: org.hibernate.dialect.MySQLDialect
+
+custom:
+  jwt:
+    secretKey: skskajdklsajdlnxcvmnqwyroasdlkajsdlkajsdluqwoirzxclndasklzxcjnmdas
