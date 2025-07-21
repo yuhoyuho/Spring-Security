@@ -1,8 +1,10 @@
 package com.sprint.mission.springjwt.config;
 
+import com.sprint.mission.springjwt.jwt.CustomLogoutFilter;
 import com.sprint.mission.springjwt.jwt.JWTFilter;
 import com.sprint.mission.springjwt.jwt.JWTUtil;
 import com.sprint.mission.springjwt.jwt.LoginFilter;
+import com.sprint.mission.springjwt.repository.RefreshRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -24,6 +27,8 @@ public class SecurityConfig {
     private final AuthenticationConfiguration configuration;
 
     private final JWTUtil jwtUtil;
+
+    private final RefreshRepository refreshRepository;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -43,6 +48,8 @@ public class SecurityConfig {
 
         http.formLogin(auth -> auth.disable());
 
+        http.logout(auth -> auth.disable());
+
         http.httpBasic(auth -> auth.disable());
 
         http.authorizeHttpRequests(auth -> auth
@@ -50,13 +57,18 @@ public class SecurityConfig {
                 .permitAll()
                 .requestMatchers("/admin")
                 .hasRole("ADMIN")
+                .requestMatchers("/reissue")
+                .permitAll()
                 .anyRequest()
                 .authenticated()
         );
 
         http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 
-        http.addFilterAt(new LoginFilter(authenticationManager(configuration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(new LoginFilter(authenticationManager(configuration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
+
+        // 로그아웃 필터 추가
+        http.addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
 
         // stateless 상태로 세션을 관리하기 위해 추가한 메서드 (JWT 인증 방식은 세션을 stateless 상태로 관리함)
         http.sessionManagement(session -> session
